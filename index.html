@@ -14,9 +14,203 @@
     <div id="content"></div>
 
     <script>
-      const contractAddress = "0x1234...";  // your deployed contract address
+      const contractAddress = "0xf6a6F897932e13E6f25193a5d754b9c81a2c3608";  // your deployed contract address
       const abi = [
         // Paste the ABI JSON here (you can get it from Remix after compilation)
+        [
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_description",
+				"type": "string"
+			},
+			{
+				"internalType": "string[]",
+				"name": "_choices",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string",
+				"name": "_betDate",
+				"type": "string"
+			}
+		],
+		"name": "createBet",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_username",
+				"type": "string"
+			}
+		],
+		"name": "createUser",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "betId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "choiceIndex",
+				"type": "uint256"
+			}
+		],
+		"name": "vote",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "bets",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "betDate",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAllBetTitles",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "betIds",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "descriptions",
+				"type": "string[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "betId",
+				"type": "uint256"
+			}
+		],
+		"name": "getBetChoices",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "choiceIds",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "choiceTexts",
+				"type": "string[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "betId",
+				"type": "uint256"
+			}
+		],
+		"name": "getBetInfo",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "betDate",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "betId",
+				"type": "uint256"
+			}
+		],
+		"name": "getBetResults",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "betDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string[]",
+				"name": "userNames",
+				"type": "string[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "choicesVoted",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "usernames",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
       ];
 
       let provider;
