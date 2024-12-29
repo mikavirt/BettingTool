@@ -10,6 +10,38 @@
     <h1>Onchain Bets</h1>
 
     <button id="connectWallet">Connect Wallet</button>
+	  <div id="status">Not connected</div>
+
+    <script>
+      const connectBtn = document.getElementById('connectBtn');
+      const statusDiv = document.getElementById('status');
+
+      connectBtn.onclick = async () => {
+        if (typeof window.ethereum !== 'undefined') {
+          try {
+            // Request account access
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const selectedAccount = accounts[0]; 
+
+            // Create an ethers provider + signer
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+
+            // Update the UI to show the wallet address
+            statusDiv.innerText = `Connected: ${selectedAccount}`;
+            
+            // If needed, you can also verify the signer address:
+            // const signerAddress = await signer.getAddress();
+            // console.log("Signer address:", signerAddress);
+          } catch (error) {
+            console.error(error);
+            statusDiv.innerText = `Error: ${error.message}`;
+          }
+        } else {
+          statusDiv.innerText = 'No MetaMask (or other) wallet found';
+        }
+      };
+    </script>
 
     <div id="content"></div>
 
