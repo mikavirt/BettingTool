@@ -12,7 +12,7 @@
 </script>
   </head>
   <body>
-    <h1>Onchain Bets v0.4.5</h1>
+    <h1>Onchain Bets v0.5.0</h1>
 
     <button id="connectWallet">Connect Wallet</button>
 	  <div id="status">Not connected</div>
@@ -288,7 +288,7 @@
             contract = new ethers.Contract(contractAddress, abi, provider);
 
             document.getElementById('connectWallet').textContent = "Wallet Connected";
-            loadBets();
+            loadAllBets();
           } catch (err) {
             console.error(err);
           }
@@ -297,31 +297,62 @@
         }
       };
 
-      async function loadBets() {
+      async function loadAllBets() {
         try {
+          // 1. Fetch all bet IDs & descriptions
           const [betIds, descriptions] = await contract.getAllBetTitles();
-          let html = "<h2>All Bets</h2><ul>";
+
+          let html = "";
+
+          // 2. Loop through each bet
           for (let i = 0; i < betIds.length; i++) {
-            html += `<li>
-              <strong>ID #${betIds[i]}:</strong> ${descriptions[i]}
-              <button onclick="showDetails(${betIds[i]})">Details</button>
-            </li>`;
+            const betId = betIds[i];
+
+            // Get bet info: returns (description, betDate)
+            const [betDescription, betDate] = await contract.getBetInfo(betId);
+
+            // If you have a separate getEndDate or something similar,
+            // fetch it here. Otherwise, just use betDate for both.
+            // const endDate = await contract.getEndDate(betId); <-- only if your contract has it
+
+            // 3. Get all choices for this bet
+            const [choiceIds, choiceTexts] = await contract.getBetChoices(betId);
+
+            // 4. Get the results (date, userNames[], choicesVoted[])
+            const [_, userNames, choicesVoted] = await contract.getBetResults(betId);
+            // or destructure fully: const [resBetDate, userNames, choicesVoted] = ...
+
+            // 5. Organize user names by choice index
+            // Initialize an array-of-arrays to hold voters for each choice
+            let votersByChoice = new Array(choiceIds.length).fill(null).map(() => []);
+            for (let j = 0; j < userNames.length; j++) {
+              const choiceIndex = choicesVoted[j];
+              votersByChoice[choiceIndex].push(userNames[j]);
+            }
+
+            // 6. Build the HTML for this bet
+            html += `<h3>Paris n°${betId}: "${betDescription}" -- "${betDate}"</h3>`;
+            
+            // Show each choice + user names
+            for (let k = 0; k < choiceIds.length; k++) {
+              const cId = choiceIds[k];
+              const cText = choiceTexts[k];
+              const voters = votersByChoice[k];
+
+              html += `<div style="margin-left:20px;">`;
+              html += `- Choix ${cId} (${cText}): [${voters.join(", ")}]`;
+              html += `</div>`;
+            }
+
+            // Show end date (if you have it)
+            html += `<div>Date de clôture du pari: TBD</div><hr/>`;
           }
-          html += "</ul>";
 
           document.getElementById('content').innerHTML = html;
-        } catch (err) {
-          console.error(err);
-        }
-      }
 
-      async function showDetails(betId) {
-        try {
-          const [desc, betDate] = await contract.getBetInfo(betId);
-          // Or call getBetResults, getBetChoices, etc. as needed
-          alert("Bet: " + desc + "  |  Date: " + betDate);
         } catch (err) {
           console.error(err);
+          document.getElementById('content').innerText = "Error fetching bets.";
         }
       }
     </script>
