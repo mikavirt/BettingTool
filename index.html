@@ -7,63 +7,69 @@
     <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.umd.min.js"></script>
   </head>
   <body>
-    <h1>Onchain Bets</h1>
+    <h1>Onchain Bets v0.4</h1>
 
     <button id="connectWallet">Connect Wallet</button>
-	  <div id="status">Not connected (commit n°3)</div>
+	  <div id="status">Not connected</div>
 
     <script>
-      window.addEventListener('load', async () => {
-  if (window.ethereum) {
-    try {
-      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-      if (accounts.length > 0) {
-        // Already connected
-        document.getElementById('status').innerText = `Connected: ${accounts[0]}`;
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }
-});
-	    let currentAccount = null;
+      const statusDiv = document.getElementById('status');
+      const connectBtn = document.getElementById('connectBtn');
 
-      // When the user clicks "Connect Wallet," request accounts
-      document.getElementById('connectBtn').onclick = async () => {
-        if (window.ethereum) {
+      // Keep track of the current account
+      let currentAccount = null;
+
+      // 1) On page load, check if there's an injected provider (MetaMask)
+      window.addEventListener('load', async () => {
+        if (typeof window.ethereum !== 'undefined') {
+          // Listen for account changes right away
+          window.ethereum.on('accountsChanged', handleAccountsChanged);
+
+          // Check if we're already connected
           try {
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            // If at least one account is returned, store and display it
+            const accounts = await window.ethereum.request({ method: 'eth_accounts' });
             if (accounts.length > 0) {
               currentAccount = accounts[0];
-              document.getElementById('status').innerText = `Connected: ${currentAccount}`;
+              statusDiv.innerText = `Already connected: ${currentAccount}`;
             }
-
-            // Listen for account changes and update automatically
-            window.ethereum.on('accountsChanged', handleAccountsChanged);
-
           } catch (err) {
-            console.error(err);
-            document.getElementById('status').innerText = `Error: ${err.message}`;
+            console.error('Error checking accounts:', err);
           }
         } else {
-          document.getElementById('status').innerText = 'No Ethereum wallet found';
+          statusDiv.innerText = 'MetaMask not found';
+        }
+      });
+
+      // 2) Clicking the button explicitly requests user to connect
+      connectBtn.onclick = async () => {
+        if (typeof window.ethereum !== 'undefined') {
+          try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            if (accounts.length > 0) {
+              currentAccount = accounts[0];
+              statusDiv.innerText = `Connected: ${currentAccount}`;
+            }
+          } catch (err) {
+            console.error('User rejected connection:', err);
+            statusDiv.innerText = 'Connection rejected';
+          }
+        } else {
+          statusDiv.innerText = 'MetaMask not found';
         }
       };
 
-      // Fired whenever the user switches accounts in MetaMask
+      // 3) Handle account changes (fires when user switches accounts in MetaMask)
       function handleAccountsChanged(accounts) {
         if (accounts.length === 0) {
-          // Wallet locked or no accounts available
+          // No accounts means MetaMask is locked or the user removed permissions
           currentAccount = null;
-          document.getElementById('status').innerText = 'Not connected';
+          statusDiv.innerText = 'Not connected';
         } else {
           currentAccount = accounts[0];
-          document.getElementById('status').innerText = `Connected: ${currentAccount}`;
+          statusDiv.innerText = `Connected: ${currentAccount}`;
         }
       }
     </script>
-
     <div id="content"></div>
 
     <script>
