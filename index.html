@@ -12,7 +12,7 @@
 </script>
   </head>
   <body>
-    <h1>Onchain Bets v0.6.2</h1>
+    <h1>Onchain Bets v0.6.3</h1>
 
     <button id="connectWallet">Connect Wallet</button>
 	  <div id="status">Not connected</div>
@@ -387,7 +387,7 @@
           const choiceIndex = parseInt(selectedChoice, 10);
 
           // Call the contract's vote function
-          const tx = await contract.connect(signer).vote(betId, choiceIndex);
+          const tx = await contract.vote(betId, choiceIndex);
           await tx.wait();
 
           alert(`Voted for choice #${choiceIndex} on bet #${betId}!`);
