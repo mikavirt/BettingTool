@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.umd.min.js"></script>
   </head>
   <body>
-    <h1>Onchain Bets v0.4</h1>
+    <h1>Onchain Bets v0.4.1</h1>
 
     <button id="connectWallet">Connect Wallet</button>
 	  <div id="status">Not connected</div>
@@ -76,7 +76,6 @@
       const contractAddress = "0xf6a6F897932e13E6f25193a5d754b9c81a2c3608";  // your deployed contract address
       const abi = [
         // Paste the ABI JSON here (you can get it from Remix after compilation)
-        [
 	{
 		"inputs": [
 			{
@@ -269,7 +268,6 @@
 		"stateMutability": "view",
 		"type": "function"
 	}
-]
       ];
 
       let provider;
