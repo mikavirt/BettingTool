@@ -12,7 +12,7 @@
 </script>
   </head>
   <body>
-    <h1>Onchain Bets v0.8.3</h1>
+    <h1>Onchain Bets v0.8.4</h1>
 
     <button id="connectWallet">Connect Wallet</button>
 	  <div id="status">Not connected</div>
@@ -93,7 +93,7 @@
       async function checkAndShowUsername(account) {
         // If we haven't set up our provider/contract yet, do so now
         if (!provider) {
-          provider = new ethers.providers.Web3Provider(window.ethereum);
+          provider = new ethers.providers.BrowserProvider(window.ethereum);
           signer = provider.getSigner();
           contract = new ethers.Contract(contractAddress, abi, signer);
         }
