@@ -12,7 +12,7 @@
 </script>
   </head>
   <body>
-    <h1>Onchain Bets v0.8.4</h1>
+    <h1>Onchain Bets v0.8.5</h1>
 
     <button id="connectWallet">Connect Wallet</button>
 	  <div id="status">Not connected</div>
@@ -93,8 +93,9 @@
       async function checkAndShowUsername(account) {
         // If we haven't set up our provider/contract yet, do so now
         if (!provider) {
-          provider = new ethers.providers.BrowserProvider(window.ethereum);
-          signer = provider.getSigner();
+					const provider = new ethers.BrowserProvider(window.ethereum); 
+          await provider.send("eth_requestAccounts", []);
+					const signer = await provider.getSigner();
           contract = new ethers.Contract(contractAddress, abi, signer);
         }
 
@@ -377,8 +378,8 @@
           try {
             //await window.ethereum.request({ method: 'eth_requestAccounts' });
             const provider = new ethers.BrowserProvider(window.ethereum);  
-            	await provider.send("eth_requestAccounts", []);
-		const signer = await provider.getSigner();
+            await provider.send("eth_requestAccounts", []);
+						const signer = await provider.getSigner();
             contract = new ethers.Contract(contractAddress, abi, signer);
 
             loadAllBets();
