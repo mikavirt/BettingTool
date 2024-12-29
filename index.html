@@ -12,7 +12,7 @@
 </script>
   </head>
   <body>
-    <h1>Onchain Bets v0.8.1</h1>
+    <h1>Onchain Bets v0.8.2</h1>
 
     <button id="connectWallet">Connect Wallet</button>
 	  <div id="status">Not connected</div>
@@ -32,7 +32,7 @@
       let currentAccount = null;
 
       // 1) On page load, check if there's an injected provider (MetaMask)
-      window.addEventListener('load', async () => {
+      /*window.addEventListener('load', async () => {
         if (typeof window.ethereum !== 'undefined') {
           // Listen for account changes right away
           window.ethereum.on('accountsChanged', handleAccountsChanged);
@@ -68,7 +68,7 @@
         } else {
           statusDiv.innerText = 'MetaMask not found';
         }
-      };
+      };*/
 
       // 3) Handle account changes (fires when user switches accounts in MetaMask)
       function handleAccountsChanged(accounts) {
