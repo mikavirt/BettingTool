@@ -12,7 +12,7 @@
 </script>
   </head>
   <body>
-    <h1>Onchain Bets v0.8.2</h1>
+    <h1>Onchain Bets v0.8.3</h1>
 
     <button id="connectWallet">Connect Wallet</button>
 	  <div id="status">Not connected</div>
@@ -27,22 +27,26 @@
     <script>
       const statusDiv = document.getElementById('status');
       const connectBtn = document.getElementById('connectWallet');
+			const usernameSection = document.getElementById("usernameSection");
+      const saveUsernameBtn = document.getElementById("saveUsernameBtn");
 
       // Keep track of the current account
       let currentAccount = null;
 
-      // 1) On page load, check if there's an injected provider (MetaMask)
-      /*window.addEventListener('load', async () => {
+      // When the page loads, we do an auto-check of existing accounts
+      window.addEventListener('load', async () => {
         if (typeof window.ethereum !== 'undefined') {
           // Listen for account changes right away
           window.ethereum.on('accountsChanged', handleAccountsChanged);
 
-          // Check if we're already connected
+          // Check if there's already an account connected
           try {
             const accounts = await window.ethereum.request({ method: 'eth_accounts' });
             if (accounts.length > 0) {
               currentAccount = accounts[0];
               statusDiv.innerText = `Already connected: ${currentAccount}`;
+              // Attempt to load username if any
+              await checkAndShowUsername(currentAccount);
             }
           } catch (err) {
             console.error('Error checking accounts:', err);
@@ -52,7 +56,7 @@
         }
       });
 
-      // 2) Clicking the button explicitly requests user to connect
+      // Button: explicitly request user to connect
       connectBtn.onclick = async () => {
         if (typeof window.ethereum !== 'undefined') {
           try {
@@ -60,6 +64,7 @@
             if (accounts.length > 0) {
               currentAccount = accounts[0];
               statusDiv.innerText = `Connected: ${currentAccount}`;
+              await checkAndShowUsername(currentAccount);
             }
           } catch (err) {
             console.error('User rejected connection:', err);
@@ -68,19 +73,73 @@
         } else {
           statusDiv.innerText = 'MetaMask not found';
         }
-      };*/
+      };
 
-      // 3) Handle account changes (fires when user switches accounts in MetaMask)
-      function handleAccountsChanged(accounts) {
+      // This fires if user switches accounts in MetaMask
+      async function handleAccountsChanged(accounts) {
         if (accounts.length === 0) {
-          // No accounts means MetaMask is locked or the user removed permissions
           currentAccount = null;
           statusDiv.innerText = 'Not connected';
+          usernameSection.style.display = 'none';
         } else {
           currentAccount = accounts[0];
           statusDiv.innerText = `Connected: ${currentAccount}`;
+          await checkAndShowUsername(currentAccount);
         }
       }
+
+      /* ---------- USERNAME LOGIC ----------- */
+      // Checks if the currentAccount has a username. If not, show the text box.
+      async function checkAndShowUsername(account) {
+        // If we haven't set up our provider/contract yet, do so now
+        if (!provider) {
+          provider = new ethers.providers.Web3Provider(window.ethereum);
+          signer = provider.getSigner();
+          contract = new ethers.Contract(contractAddress, abi, signer);
+        }
+
+        try {
+          const username = await contract.usernames(account);
+          if (username && username.length > 0) {
+            // If user already has a username, hide the input
+            usernameSection.style.display = 'none';
+            statusDiv.innerText = `Connected as ${username} (${account})`;
+          } else {
+            // Show the text input to choose a new username
+            usernameSection.style.display = 'block';
+          }
+        } catch (err) {
+          console.error("Error checking username:", err);
+        }
+      }
+
+      // Called when user clicks "Save Username"
+      saveUsernameBtn.onclick = async () => {
+        try {
+          const chosenName = document.getElementById("usernameInput").value.trim();
+          if (!chosenName) {
+            alert("Please enter a username first!");
+            return;
+          }
+          // Make sure we have contract/signer set up
+          if (!contract || !currentAccount) {
+            alert("No wallet connected!");
+            return;
+          }
+
+          // Call the contract function to set username
+          const tx = await contract.createUser(chosenName);
+          await tx.wait();
+
+          alert("Username saved successfully!");
+          // Hide the input and update the status
+          usernameSection.style.display = 'none';
+          statusDiv.innerText = `Connected as ${chosenName} (${currentAccount})`;
+        } catch (err) {
+          console.error("Error saving username:", err);
+          alert("Error: " + err.message);
+        }
+      };
     </script>
     <div id="content"></div>
 	  <!-- CREATE NEW BET SECTION -->
@@ -322,31 +381,6 @@
 		const signer = await provider.getSigner();
             contract = new ethers.Contract(contractAddress, abi, signer);
 
-            //document.getElementById('connectWallet').textContent = "Wallet Connected";
-		  async function saveUsername() {
-        if (!contract || !currentAccount) {
-          alert("Not connected yet!");
-          return;
-        }
-        const chosenName = document.getElementById('usernameInput').value.trim();
-        if (!chosenName) {
-          alert("Please enter a username");
-          return;
-        }
-        try {
-          const tx = await contract.createUser(chosenName);
-          await tx.wait();
-
-          // Update the UI
-          document.getElementById('usernameSection').style.display = 'none';
-          document.getElementById('status').innerText = 
-            `Connected as ${chosenName} (${currentAccount})`;
-          alert("Username saved successfully!");
-        } catch (err) {
-          console.error(err);
-          alert("Error saving username: " + err.message);
-        }
-      }
             loadAllBets();
           } catch (err) {
             console.error(err);
