@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Onchain Bets Demo</title>
+    <!-- Pull in ethers.js from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.umd.min.js"></script>
+  </head>
+  <body>
+    <h1>Onchain Bets</h1>
+
+    <button id="connectWallet">Connect Wallet</button>
+
+    <div id="content"></div>
+
+    <script>
+      const contractAddress = "0x1234...";  // your deployed contract address
+      const abi = [
+        // Paste the ABI JSON here (you can get it from Remix after compilation)
+      ];
+
+      let provider;
+      let signer;
+      let contract;
+
+      document.getElementById('connectWallet').onclick = async () => {
+        if (window.ethereum) {
+          try {
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            signer = provider.getSigner();
+            contract = new ethers.Contract(contractAddress, abi, provider);
+
+            document.getElementById('connectWallet').textContent = "Wallet Connected";
+            loadBets();
+          } catch (err) {
+            console.error(err);
+          }
+        } else {
+          alert("No Ethereum wallet detected!");
+        }
+      };
+
+      async function loadBets() {
+        try {
+          const [betIds, descriptions] = await contract.getAllBetTitles();
+          let html = "<h2>All Bets</h2><ul>";
+          for (let i = 0; i < betIds.length; i++) {
+            html += `<li>
+              <strong>ID #${betIds[i]}:</strong> ${descriptions[i]}
+              <button onclick="showDetails(${betIds[i]})">Details</button>
+            </li>`;
+          }
+          html += "</ul>";
+
+          document.getElementById('content').innerHTML = html;
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      async function showDetails(betId) {
+        try {
+          const [desc, betDate] = await contract.getBetInfo(betId);
+          // Or call getBetResults, getBetChoices, etc. as needed
+          alert("Bet: " + desc + "  |  Date: " + betDate);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    </script>
+  </body>
+</html>
