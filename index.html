@@ -13,34 +13,42 @@
 	  <div id="status">Not connected</div>
 
     <script>
-      const connectBtn = document.getElementById('connectBtn');
-      const statusDiv = document.getElementById('status');
+      let currentAccount = null;
 
-      connectBtn.onclick = async () => {
-        if (typeof window.ethereum !== 'undefined') {
+      // When the user clicks "Connect Wallet," request accounts
+      document.getElementById('connectBtn').onclick = async () => {
+        if (window.ethereum) {
           try {
-            // Request account access
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            const selectedAccount = accounts[0]; 
+            // If at least one account is returned, store and display it
+            if (accounts.length > 0) {
+              currentAccount = accounts[0];
+              document.getElementById('status').innerText = `Connected: ${currentAccount}`;
+            }
 
-            // Create an ethers provider + signer
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = provider.getSigner();
+            // Listen for account changes and update automatically
+            window.ethereum.on('accountsChanged', handleAccountsChanged);
 
-            // Update the UI to show the wallet address
-            statusDiv.innerText = `Connected: ${selectedAccount}`;
-            
-            // If needed, you can also verify the signer address:
-            // const signerAddress = await signer.getAddress();
-            // console.log("Signer address:", signerAddress);
-          } catch (error) {
-            console.error(error);
-            statusDiv.innerText = `Error: ${error.message}`;
+          } catch (err) {
+            console.error(err);
+            document.getElementById('status').innerText = `Error: ${err.message}`;
           }
         } else {
-          statusDiv.innerText = 'No MetaMask (or other) wallet found';
+          document.getElementById('status').innerText = 'No Ethereum wallet found';
         }
       };
+
+      // Fired whenever the user switches accounts in MetaMask
+      function handleAccountsChanged(accounts) {
+        if (accounts.length === 0) {
+          // Wallet locked or no accounts available
+          currentAccount = null;
+          document.getElementById('status').innerText = 'Not connected';
+        } else {
+          currentAccount = accounts[0];
+          document.getElementById('status').innerText = `Connected: ${currentAccount}`;
+        }
+      }
     </script>
 
     <div id="content"></div>
