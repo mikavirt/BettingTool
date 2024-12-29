@@ -12,7 +12,7 @@
 </script>
   </head>
   <body>
-    <h1>Onchain Bets v0.6.3</h1>
+    <h1>Onchain Bets v0.7.0</h1>
 
     <button id="connectWallet">Connect Wallet</button>
 	  <div id="status">Not connected</div>
@@ -76,6 +76,33 @@
       }
     </script>
     <div id="content"></div>
+	  <!-- CREATE NEW BET SECTION -->
+    <div id="createBetSection" style="border:1px solid #ccc; padding:15px; margin-top:20px;">
+      <h2>Create a New Bet</h2>
+      <div>
+        <label for="betDescription">Description:</label><br/>
+        <input type="text" id="betDescription" placeholder="Short bet description" style="width:300px;">
+      </div>
+
+      <div style="margin-top:10px;">
+        <label for="betDate">Bet Date (any string, e.g. YYYY-MM-DD):</label><br/>
+        <input type="text" id="betDate" placeholder="2024-01-01" style="width:200px;">
+      </div>
+
+      <div style="margin-top:10px;">
+        <label>Choices (at least 2):</label>
+        <div id="choicesContainer" style="margin-top:5px;">
+          <!-- Default 2 choices -->
+          <input type="text" placeholder="Choice #1" style="display:block; margin-bottom:5px;">
+          <input type="text" placeholder="Choice #2" style="display:block; margin-bottom:5px;">
+        </div>
+        <button onclick="addChoice()">+ Add More Choice</button>
+      </div>
+
+      <div style="margin-top:15px;">
+        <button onclick="createNewBet()">Create Bet</button>
+      </div>
+    </div>
 
     <script>
       const contractAddress = "0xf6a6F897932e13E6f25193a5d754b9c81a2c3608";  // your deployed contract address
@@ -396,6 +423,66 @@
         } catch (err) {
           console.error(err);
           alert("Error in voting: " + err.message);
+        }
+      }
+    /* ------------------ CREATE NEW BET ------------------ */
+      // Called when user clicks "+ Add More Choice" 
+      function addChoice() {
+        const container = document.getElementById('choicesContainer');
+        const input = document.createElement('input');
+        input.type = "text";
+        input.placeholder = `Choice #${container.children.length + 1}`;
+        input.style.display = "block";
+        input.style.marginBottom = "5px";
+        container.appendChild(input);
+      }
+
+      // Called when user clicks "Create Bet"
+      async function createNewBet() {
+        if (!contract) {
+          alert("Connect your wallet first!");
+          return;
+        }
+
+        // 1. Read the fields
+        const description = document.getElementById('betDescription').value;
+        const betDate = document.getElementById('betDate').value;
+
+        // 2. Gather all choices
+        const container = document.getElementById('choicesContainer');
+        const choiceInputs = container.querySelectorAll('input[type="text"]');
+        const choices = [];
+        for (let i = 0; i < choiceInputs.length; i++) {
+          const val = choiceInputs[i].value.trim();
+          if (val.length > 0) {
+            choices.push(val);
+          }
+        }
+
+        if (!description || choices.length < 2) {
+          alert("Please provide at least a description and 2 choices.");
+          return;
+        }
+
+        // 3. Call the createBet function
+        try {
+          const tx = await contract.createBet(description, choices, betDate);
+          await tx.wait();
+          alert("Bet created successfully!");
+
+          // Clear fields
+          document.getElementById('betDescription').value = "";
+          document.getElementById('betDate').value = "";
+          container.innerHTML = `
+            <input type="text" placeholder="Choice #1" style="display:block; margin-bottom:5px;">
+            <input type="text" placeholder="Choice #2" style="display:block; margin-bottom:5px;">
+          `;
+
+          // Reload bets to see the new one
+          loadAllBets();
+        } catch (err) {
+          console.error(err);
+          alert("Error creating bet: " + err.message);
         }
       }
     </script>
