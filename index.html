@@ -12,11 +12,18 @@
 </script>
   </head>
   <body>
-    <h1>Onchain Bets v0.7.0</h1>
+    <h1>Onchain Bets v0.8.0</h1>
 
     <button id="connectWallet">Connect Wallet</button>
 	  <div id="status">Not connected</div>
 
+	      <!-- Username setup section -->
+    <div id="usernameSection" style="display:none; margin-top:10px;">
+      <label for="usernameInput">Choose a username:</label><br/>
+      <input type="text" id="usernameInput" placeholder="e.g. Satoshi" />
+      <button onclick="saveUsername()">Save Username</button>
+    </div>
+	  
     <script>
       const statusDiv = document.getElementById('status');
       const connectBtn = document.getElementById('connectWallet');
@@ -325,6 +332,31 @@
         }
       };
 
+	    async function saveUsername() {
+        if (!contract || !currentAccount) {
+          alert("Not connected yet!");
+          return;
+        }
+        const chosenName = document.getElementById('usernameInput').value.trim();
+        if (!chosenName) {
+          alert("Please enter a username");
+          return;
+        }
+        try {
+          const tx = await contract.createUser(chosenName);
+          await tx.wait();
+
+          // Update the UI
+          document.getElementById('usernameSection').style.display = 'none';
+          document.getElementById('status').innerText = 
+            `Connected as ${chosenName} (${currentAccount})`;
+          alert("Username saved successfully!");
+        } catch (err) {
+          console.error(err);
+          alert("Error saving username: " + err.message);
+        }
+      }
+	    
       async function loadAllBets() {
         try {
           // 1. Fetch all bet IDs & descriptions
