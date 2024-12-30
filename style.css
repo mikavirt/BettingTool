@@ -81,6 +81,10 @@
     color: #ffffff; /* White labels for visibility */
   }
 
+  status {
+    color: #ffffff; /* White labels for visibility */
+  }
+
   h1, h2, h3 {
     color: #ffffff; /* Ensure all headings are white */
     margin-top: 20px;
