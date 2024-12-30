@@ -1,12 +1,13 @@
 <style>
-  /* Global Styles */
+  /* Global Reset */
   html, body {
     margin: 0;
     padding: 0;
     height: 100%;
+    width: 100%;
     background-color: #121212; /* Full black background */
     color: #ffffff; /* Default white text */
-    font-family: Arial, sans-serif;
+    font-family: Arial, sans-serif; /* Ensure global Arial font */
   }
 
   body {
@@ -16,16 +17,18 @@
     flex-direction: column;
   }
 
+  /* Main Container */
   #mainContainer {
-    background-color: #1e1e1e; /* Dark frame background */
+    background-color: #1e1e1e; /* Dark container */
     border: 1px solid #333333;
     border-radius: 10px;
     padding: 20px;
     width: 100%;
-    max-width: 500px; /* Limit frame width on large screens */
+    max-width: 500px; /* Limit width on larger screens */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     margin: 20px;
-    text-align: center; /* Center content inside the container */
+    text-align: center;
+    font-family: Arial, sans-serif; /* Ensure Arial inside container */
   }
 
   /* Responsive Design for Mobile */
@@ -36,6 +39,20 @@
     body {
       padding: 10px;
     }
+  }
+
+  /* Headings */
+  h1, h2, h3 {
+    color: #ffffff; /* Ensure all headings are white */
+    font-family: Arial, sans-serif; /* Ensure font consistency */
+    margin-top: 20px;
+  }
+
+  /* Status */
+  #status {
+    color: #ffffff; /* Ensure "Not connected" is visible */
+    font-weight: bold;
+    margin-bottom: 15px;
   }
 
   /* Buttons */
@@ -49,6 +66,7 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-top: 15px;
+    font-family: Arial, sans-serif; /* Consistent button font */
   }
 
   button:hover {
@@ -70,24 +88,17 @@
     width: calc(100% - 24px);
     margin-bottom: 10px;
     box-sizing: border-box;
+    font-family: Arial, sans-serif; /* Consistent input font */
   }
 
   input[type="text"]::placeholder {
     color: #bbbbbb; /* Slightly dimmed placeholder text */
   }
 
-  /* Labels and Section Headers */
+  /* Labels */
   label {
-    color: #ffffff; /* White labels for visibility */
-  }
-
-  status {
-    color: #ffffff; /* White labels for visibility */
-  }
-
-  h1, h2, h3 {
-    color: #ffffff; /* Ensure all headings are white */
-    margin-top: 20px;
+    color: #ffffff; /* Ensure labels are visible */
+    font-family: Arial, sans-serif; /* Consistent font for labels */
   }
 
   /* Username Section */
@@ -99,7 +110,7 @@
     margin-top: 20px;
   }
 
-  /* Bet Cards (Optional for Content Area) */
+  /* Bet Cards */
   .bet-card {
     background-color: #1e1e1e;
     border: 1px solid #333333;
@@ -107,5 +118,6 @@
     padding: 15px;
     margin-top: 20px;
     color: #ffffff; /* White text inside bet cards */
+    font-family: Arial, sans-serif; /* Ensure consistent font */
   }
 </style>
