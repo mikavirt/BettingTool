@@ -92,6 +92,7 @@
   }
 /* Style for bet choices */
   .choice-container {
+    color: #ffffff;
     text-align: left; /* Align radio buttons and text to the left */
     margin: 10px 0; /* Add spacing between choices */
     display: flex;
