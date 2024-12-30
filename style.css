@@ -90,6 +90,23 @@
     box-sizing: border-box;
     font-family: Arial, sans-serif; /* Consistent input font */
   }
+/* Style for bet choices */
+  .choice-container {
+    text-align: left; /* Align radio buttons and text to the left */
+    margin: 10px 0; /* Add spacing between choices */
+    display: flex;
+    align-items: center; /* Vertically align radio button and text */
+  }
+
+  .choice-container input[type="radio"] {
+    margin-right: 10px; /* Space between radio button and label */
+  }
+
+  .choice-container span {
+    color: #bbbbbb; /* Brighter text for voter list */
+    font-size: 14px; /* Slightly smaller font for voter details */
+    margin-left: 10px; /* Add spacing from the choice text */
+  }
 
   input[type="text"]::placeholder {
     color: #bbbbbb; /* Slightly dimmed placeholder text */
