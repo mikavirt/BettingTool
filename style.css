@@ -1,25 +1,41 @@
 <style>
   /* Global Styles */
-  body {
-    background-color: #121212;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
+  html, body {
     margin: 0;
     padding: 0;
-    line-height: 1.6;
-  }
-
-  h1, h2 {
+    height: 100%;
+    background-color: #121212; /* Set the white frame to black */
     color: #ffffff;
-    text-align: center;
-    margin-top: 20px;
+    font-family: Arial, sans-serif;
   }
 
-  #status {
-    text-align: center;
-    margin: 15px 0;
-    font-weight: bold;
-    color: #ff9800;
+  body {
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center;    /* Center content vertically */
+    flex-direction: column;
+  }
+
+  #mainContainer {
+    background-color: #1e1e1e; /* Dark background for the frame */
+    border: 1px solid #333333;
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    max-width: 500px; /* Limit frame width on large screens */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin: 20px;
+    text-align: center; /* Center content inside the container */
+  }
+
+  /* Responsive Design for Mobile */
+  @media (max-width: 600px) {
+    #mainContainer {
+      width: 90%; /* Ensure content fits nicely on small screens */
+    }
+    body {
+      padding: 10px;
+    }
   }
 
   /* Buttons */
@@ -32,6 +48,7 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-top: 15px;
   }
 
   button:hover {
@@ -59,44 +76,12 @@
     color: #bbbbbb;
   }
 
-  /* Containers */
-  #usernameSection,
-  #createBetSection,
-  .bet-card {
+  /* Username Section */
+  #usernameSection {
     background-color: #1e1e1e;
     border: 1px solid #333333;
     border-radius: 10px;
-    padding: 20px;
-    margin: 20px auto;
-    max-width: 500px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  /* Bet Cards */
-  .bet-card {
-    color: #ffffff;
-  }
-
-  .bet-card h3 {
-    margin-bottom: 10px;
-  }
-
-  .bet-card div {
-    margin: 5px 0;
-  }
-
-  .bet-card input[type="radio"] {
-    margin-right: 10px;
-  }
-
-  /* Links (Optional, for a modern touch) */
-  a {
-    color: #1e88e5;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-
-  a:hover {
-    color: #1565c0;
+    padding: 15px;
+    margin-top: 20px;
   }
 </style>
