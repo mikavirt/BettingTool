@@ -104,7 +104,7 @@
   }
 
   .choice-container span {
-    color: #bbbbbb; /* Brighter text for voter list */
+    color: #f1f1f1; /* Brighter text for voter list */
     font-size: 14px; /* Slightly smaller font for voter details */
     margin-left: 10px; /* Add spacing from the choice text */
   }
